@@ -14,6 +14,8 @@ parser.add_argument('--image', action='store_true', help='''sync with the image 
 
 parser.add_argument('--udemrd', action='store_true', help='''sync with the udem research demo folder''')
 
+parser.add_argument('--udemlua', action='store_true', help='''sync with the udem lua_packages folder''')
+
 
 args = parser.parse_args()
 
@@ -44,6 +46,10 @@ elif args.udemrd:
     os.system("rsync -rvu %s /Volumes/Storage/VCTK/Research-Demo \
                 wuzhen@elisa2.iro.umontreal.ca:/data/lisa/exp/wuzhen/nii/VoiceCloneCommercial2/"%exclude)
 
+elif args.udemlua:
+	os.system("rsync -rvu %s /Volumes/Storage/lua_packages \
+                wuzhen@elisa2.iro.umontreal.ca:/data/lisa/exp/wuzhen/"%exclude)
+
 else:
-	raise ValueError('options is neither --udem | --nii | --biaree | --udemrd | --image')
+	raise ValueError('options is neither --udem | --nii | --biaree | --udemrd | --udemlua | --image')
 

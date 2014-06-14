@@ -27,8 +27,7 @@ def savenpy(spec_files, splits, dtype, feature_size, output_dir):
     
     assert dtype in ['f4', 'f8']
     
-    spec_files = os.path.realpath(spec_files)
-    dataset = os.path.basename(os.dirname(spec_files))
+    dataset = os.path.basename(os.path.dirname(spec_files))
     files = glob.glob(spec_files)
     size = len(files)
     assert size > 0, 'empty folder'
@@ -69,7 +68,7 @@ def savenpy(spec_files, splits, dtype, feature_size, output_dir):
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='''combine specs files inside splits of npy files''')
-    parser.add_argument('--spec_files', metavar='PATH', help='''path of the spec files''')
+    parser.add_argument('--spec_files', metavar='PATH', type=str, help='''path of the spec files''')
     parser.add_argument('--splits', metavar='INT', default=1, type=int, 
                         help='''number of splits for the merged spec files''')
     parser.add_argument('--input_spec_dtype', metavar='f4|f8', default='f4', 
@@ -82,9 +81,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print('..dataset directory: %s'%args.spec_files)
-    print('..extension: %s'%args.ext)
     print('..number of splits: %s'%args.splits)
     print('..input data files dtype: %s'%args.input_spec_dtype)
+    print('..feature_size: %s'%args.feature_size)
     print('..save outputs to: %s'%args.output_dir)
     
     savenpy(args.spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)

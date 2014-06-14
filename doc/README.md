@@ -22,7 +22,7 @@ $ python specs2data.py -h
 For example, in order to merge p276 spec files into one npy file (splits = 1), issue
 
 ```bash
-$ python specs2data.py --spec_files /path/to/p276/*.spec --splits 1 --input_spec_dtype f4 
+$ python specs2data.py --spec_files '/path/to/p276/*.spec' --splits 1 --input_spec_dtype f4 
 --feature_size 2049 --output_dir /path/to/output_dir/
 ```
 

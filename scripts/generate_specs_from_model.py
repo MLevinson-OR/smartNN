@@ -19,8 +19,8 @@ args = parser.parse_args()
 
 
 print 'opening model.. ' + args.model
-f = open(args.model+'/model.pkl')
-model = cPickle.load(f)
+with open(args.model+'/model.pkl') as m:
+  model = cPickle.load(m)
 
 dataset_files = glob.glob(args.dataset)
 

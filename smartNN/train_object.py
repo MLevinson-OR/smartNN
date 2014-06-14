@@ -18,17 +18,6 @@ from smartNN.utils.utils import split_list, generate_shared_list, \
 
 class TrainObject():
 
-    '''
-    UPDATES:
-        (Normal momentum)
-        delta := momentum * delta - learning_rate * (d cost(param) / d param)
-        param := param + delta
-        
-        (Nesterov momentum)
-        delta := momentum * delta - learning_rate * (d cost(param + momentum*delta) / d param)
-        param := param + delta
-    '''
-
     def __init__(self, model, dataset, learning_rule, log=None):
         self.model = model
         self.dataset = dataset
@@ -82,7 +71,19 @@ class TrainObject():
             
             prev_layer_dim = layer.dim
         
-        #=====================[ training params updates ]=====================#            
+        #=====================[ training params updates ]=====================# 			
+        # UPDATES:
+        # (Normal momentum)
+        # 			delta := momentum * delta - 
+        #                learning_rate * (d cost(param) / d param)
+        # 			param := param + delta
+        # 	
+        # (Nesterov momentum)
+        # 			delta := momentum * delta - 
+        #                learning_rate * (d cost(param + momentum*delta) / d param)
+        # 			param := param + delta
+        #---------------------------------------------------------------------#
+
         
         self.log.logger.info("..number of update params: " + str(len(params)))
         
@@ -371,7 +372,7 @@ class TrainObject():
             
             end_time = time.time()
             
-            #=====================[ log outputs to file ]=====================#
+            #=========================[ log outputs ]=========================#
 
             merged_train = merge_lists(train_stats_names, train_stats_values)
             merged_valid = merge_lists(valid_stats_names, valid_stats_values)
@@ -417,17 +418,4 @@ class TrainObject():
         
         else:
             return True
-    
-
-    
-    
-    
-            
-                
-    
-    
-
-
-    
-            
-        
+     

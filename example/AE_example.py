@@ -56,6 +56,7 @@ def autoencoder():
     # building dataset
     data = Mnist(train_valid_test_ratio=[5,1,1])
     
+    # for AutoEncoder, the inputs and outputs must be the same
     train = data.get_train()
     data.set_train(train.X, train.X)
     

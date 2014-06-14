@@ -97,9 +97,8 @@ class AutoEncoder(MLP):
         self.encode_layers = []
         self.decode_layers = []
         
-        super(AutoEncoder, self).__init__(**kwargs)
-    
-   
+        super(AutoEncoder, self).__init__(**kwargs)  
+
     def add_encode_layer(self, layer):
         self.add_layer(layer)
         self.encode_layers.append(layer)
@@ -134,6 +133,7 @@ class AutoEncoder(MLP):
         output_state = self._fprop(self.decode_layers, input_state)
         f = theano.function([input_state], output_state)
         return f(input_values)
+
     
     
     

@@ -63,16 +63,13 @@ if __name__ == '__main__':
     parser.add_argument('--ext', default='out', help='''extension of the npy files''')
     parser.add_argument('--output_spec_dtype',  default='f8', help='''dtype of the generated spec files f4|f8''')
 
-
     args = parser.parse_args()
     
     dataset_dir = NNdir + '/data/' + args.dataset
     
-    
     print('..dataset directory: %s'%dataset_dir)
     print('..extension: %s'%args.ext)
     print('..output data files dtype: %s'%args.output_spec_dtype)
-    
     
     filenames = dataset_dir + '/%s_specnames_???.npy'%args.dataset
     data_files = dataset_dir + '/%s_data_???.npy.%s'%(args.dataset, args.ext)

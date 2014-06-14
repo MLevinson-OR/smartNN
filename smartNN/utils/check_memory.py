@@ -1,8 +1,12 @@
+
+# adapted from http://stackoverflow.com/questions/938733/total-memory-used-by-python-process
+
 import os
 _proc_status = '/proc/%d/status' % os.getpid()
 
 _scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,
           'KB': 1024.0, 'MB': 1024.0*1024.0}
+
 
 def _VmB(VmKey):
     '''Private.
@@ -25,18 +29,18 @@ def _VmB(VmKey):
 
 
 def memory(since=0.0):
-    '''Return memory usage in bytes.
+    '''Return memory usage in kb.
     '''
-    return _VmB('VmSize:') - since
+    return (_VmB('VmSize:') - since) / 1000.0
 
 
 def resident(since=0.0):
-    '''Return resident memory usage in bytes.
+    '''Return resident memory usage in kb.
     '''
-    return _VmB('VmRSS:') - since
+    return (_VmB('VmRSS:') - since) / 1000.0
 
 
 def stacksize(since=0.0):
-    '''Return stack size in bytes.
+    '''Return stack size in kb.
     '''
-    return _VmB('VmStk:') - since
+    return (_VmB('VmStk:') - since) / 1000.0
