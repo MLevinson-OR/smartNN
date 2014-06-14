@@ -7,10 +7,10 @@ import smartNN.datasets.preprocessor as proc
 
 parser = argparse.ArgumentParser(description='pass numpy data file through an AutoEncoder,'
                                             + ' and generate spec files from the AE outputs.')
-parser.add_argument('--model', metavar='PATH', help='path for the model')
+parser.add_argument('--model', metavar='DIR', help='path for the model')
 parser.add_argument('--preprocessor', metavar='NAME', help='name of the preprocessor')
 parser.add_argument('--dataset', metavar='PATH', help='path to the numpy data file')
-parser.add_argument('--output_dir', metavar='PATH', 
+parser.add_argument('--output_dir', metavar='DIR', 
                     help='directory to which to save the generated spec files')
 parser.add_argument('--output_dtype', metavar='f4|f8', default='<f8', 
                     help='output datatype of spec file, f4|f8')

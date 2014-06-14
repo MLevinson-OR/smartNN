@@ -127,8 +127,8 @@ to generate the results. To generate all the specfiles from the model. Run the s
 [generate_specs_from_model.py](../scripts/generate_specs_from_model.py).
 
 ```bash
-$ python generate_specs_from_model.py --model /path/to/model.pkl --preprocessor GCN 
---dataset /path/to/p276_data_000.npy --output_dir /dir/for/specfiles/ --output_dtype <f8
+$ python generate_specs_from_model.py --model /dir/for/model/ --preprocessor GCN 
+--dataset '/path/to/p276_data_000.npy' --output_dir /dir/for/specfiles/ --output_dtype <f8
 ```
 The script `generate_specs_from_model.py` basically goes through the following steps    
 1.  load model.pkl  
