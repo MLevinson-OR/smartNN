@@ -53,7 +53,7 @@ def autoencoder():
                                                 'percent_decrease' : 0.001}
                             )
     
-    # building dataset
+    # building dataset, change to P276 to train on P276 dataset
     data = Mnist(train_valid_test_ratio=[5,1,1])
     
     # for AutoEncoder, the inputs and outputs must be the same
@@ -225,5 +225,5 @@ def stacked_autoencoder():
     print('Training Done')
 
 if __name__ == '__main__':
-#     autoencoder()
-    stacked_autoencoder()
+    autoencoder()
+#     stacked_autoencoder()

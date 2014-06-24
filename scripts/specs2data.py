@@ -68,7 +68,8 @@ def savenpy(spec_files, splits, dtype, feature_size, output_dir):
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='''combine specs files inside splits of npy files''')
-    parser.add_argument('--spec_files', metavar='PATH', type=str, help='''path of the spec files''')
+    parser.add_argument('--spec_dir', metavar='DIR', type=str, help='''dir of the spec files''')
+    parser.add_argument('--ext', metavar='EXT', default='spec', help='''extension of spec files'''
     parser.add_argument('--splits', metavar='INT', default=1, type=int, 
                         help='''number of splits for the merged spec files''')
     parser.add_argument('--input_spec_dtype', metavar='f4|f8', default='f4', 
@@ -80,13 +81,16 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print('..dataset directory: %s'%args.spec_files)
+    print('..dataset directory: %s'%args.spec_dir)
+    print('..spec extension: %s'%args.ext)
     print('..number of splits: %s'%args.splits)
     print('..input data files dtype: %s'%args.input_spec_dtype)
     print('..feature_size: %s'%args.feature_size)
     print('..save outputs to: %s'%args.output_dir)
     
-    savenpy(args.spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)
+    spec_files = "%s.*%s"%(args.spec_dir, args.ext)
+    
+    savenpy(spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)
         
         
         
