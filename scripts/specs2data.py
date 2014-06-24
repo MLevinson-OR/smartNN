@@ -91,7 +91,7 @@ if __name__ == '__main__':
     spec_files = "%s*.%s"%(args.spec_dir, args.ext)
     print(spec_files)
     
-#     savenpy(spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)
+    savenpy(spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)
         
         
         
