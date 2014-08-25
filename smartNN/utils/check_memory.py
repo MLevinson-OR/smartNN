@@ -31,16 +31,21 @@ def _VmB(VmKey):
 def memory(since=0.0):
     '''Return memory usage in kb.
     '''
-    return (_VmB('VmSize:') - since) / 1000.0
+    return (_VmB('VmSize:') - since) / 1.0e6
 
 
 def resident(since=0.0):
     '''Return resident memory usage in kb.
     '''
-    return (_VmB('VmRSS:') - since) / 1000.0
+    return (_VmB('VmRSS:') - since) / 1.0e6
 
 
 def stacksize(since=0.0):
     '''Return stack size in kb.
     '''
-    return (_VmB('VmStk:') - since) / 1000.0
+    return (_VmB('VmStk:') - since) / 1.0e6
+
+def print_mem_usage():
+    print('memory: ' + str(memory()) + ' MB')
+    print('resident: ' + str(resident()) + ' MB')
+    print('stacksize: ' + str(resident()) + ' MB')

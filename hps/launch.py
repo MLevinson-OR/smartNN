@@ -51,16 +51,16 @@ def get_cmd(model, mem, use_gpu, queue, host, duree):
     dt = datetime.now()
     dt = dt.strftime('%Y%m%d_%H%M_%S%f')
     cmd = 'jobdispatch --file=commands.txt --exp_dir=%s_%s'%(model,dt)
-    
+
     if mem:
         cmd += ' --mem=%s '%mem
-    
+
     if queue:
         cmd += ' --queue=%s '%queue
-    
+
     if duree:
         cmd += ' --duree=%s '%duree
-    
+
     if 'umontreal' in host:
         # Lisa cluster.
         cmd += ' --condor '
@@ -87,34 +87,32 @@ if __name__=='__main__':
 
     parser.add_argument('-g', '--use_gpu', action='store_true',
                         help='''Models will be trained with gpus''')
-    
+
     parser.add_argument('-q', '--queue',
                         help='''The queue to insert the jobs''')
 
-    parser.add_argument('-n', '--total_number_jobs', type=int, dest='n_jobs',
-                        default=1, help='''The total number of jobs that will
-                                             be launched.''')
+    parser.add_argument('-n', '--total_number_jobs', type=int, dest='n_jobs', default=1,
+                        help='''The total number of jobs that will be launched on machines.''')
 
-    parser.add_argument('-m', '--memory', dest='mem',
+    parser.add_argument('-m', '--mem',
                         help='''Memory usage limit by job in MB.''')
 
-    parser.add_argument('-c', '--number_concurrent_jobs', type=int,
-                        dest='n_concur_jobs',
+    parser.add_argument('-c', '--n_concur_jobs', type=int,
                         help='''If this option is used, then jobs will be
                                 launched locally and it specifies the
                                 number of concurrent jobs that can
                                 running at the same time at most.''')
-    
+
     parser.add_argument('-r', '--record', action='store_true',
                        help='''If this option is used, then the outputs from
                                terminal will be saved into file''')
-                               
+
     parser.add_argument('--duree', help='''Walltime hh:mm:ss''')
-    
+
     parser.add_argument('--cpu', help='''number of cores per node''')
-                               
+
     parser.add_argument('--model', help='''choose the model AE or AE_Two_Layers to run''')
-    
+
     # TODO: ajouter assert pour s'assurer que lorsqu'on lance des jobs avec gpu, seulement
     # 1 job puisse etre lance localement.
     args = parser.parse_args()
@@ -132,7 +130,6 @@ if __name__=='__main__':
 
     host = socket.gethostname()
     print 'Host = ', host
-    # TODO: Hardcoded model name.        
 
     if args.n_concur_jobs:
         host = 'local'
@@ -147,10 +144,10 @@ if __name__=='__main__':
         # TODO: do not hardcode the common options!
         if args.record:
             print('..outputs of job (' + str(i) + ') will be recorded')
-            exp_cmd = 'jobman -r cmdline %s '%exp_model 
+            exp_cmd = 'jobman -r cmdline %s '%exp_model
         else:
             exp_cmd = 'jobman cmdline %s '%exp_model
-        
+
         print exp_cmd
 
         if 'ip05' in host:
@@ -166,9 +163,9 @@ if __name__=='__main__':
     f.close()
 
     os.chdir(jobs_folder)
-    
+
     print '..commands: ', cmd
-    
+
     if not args.n_concur_jobs:
         os.system(cmd)
     else:
@@ -178,6 +175,7 @@ if __name__=='__main__':
         n_job_simult = 0
         jobs = []
         commands = exps_by_model[model]
+        print commands
 
         for command in commands:
             if n_job_simult < args.n_concur_jobs:
@@ -188,7 +186,7 @@ if __name__=='__main__':
                 p.start()
                 n_jobs += 1
                 n_job_simult += 1
-                
+
             else:
                 ready_for_more = False
                 while not ready_for_more:

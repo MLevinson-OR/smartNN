@@ -3,13 +3,7 @@ import glob
 import os
 import argparse
 
-thisfile_path = os.path.realpath(__file__)
-thisfile_dir = os.path.dirname(thisfile_path)
-NNdir = os.path.dirname(thisfile_dir)
-
-print 'smartNN directory %s'%NNdir
-
-def generate_specs(datafiles, filename_files, dtype):
+def generate_specs(datafiles, filename_files, dtype, outdir):
     
     assert dtype in ['f4', 'f8']
     
@@ -23,8 +17,6 @@ def generate_specs(datafiles, filename_files, dtype):
     
     print 'npy Data paths: ', data_paths
     print 'specnames paths: ', filename_paths
-    
-    outdir = os.path.dirname(datafiles[0]) + '/generated_specs'
     
     if not os.path.exists(outdir):
         os.mkdir(outdir)
@@ -46,6 +38,8 @@ def generate_specs(datafiles, filename_files, dtype):
         pointer = 0
         for f_name, num in f_arr:
             print 'f_name, num_exp : %s, %s'%(f_name, num)
+            f_name = f_name.rstrip('.f4')
+            f_name = f_name.rstrip('.f8')
             d_arr[pointer:pointer+int(num)].tofile(outdir + '/' + f_name+'.%s'%dtype, format=dtype)
             pointer += int(num)
         
@@ -59,22 +53,16 @@ def generate_specs(datafiles, filename_files, dtype):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='''Generate spec files from splits of npy files''')
-    parser.add_argument('--dataset', help='''name of dataset''')
-    parser.add_argument('--ext', default='out', help='''extension of the npy files''')
-    parser.add_argument('--output_spec_dtype',  default='f8', help='''dtype of the generated spec files f4|f8''')
+    parser.add_argument('--dataset', metavar='PATH', help='''path to data npy files''')
+    parser.add_argument('--specnames', metavar='PATH', help='''path to specnames npy files''')
+    parser.add_argument('--output_spec_dtype',  default='f8', help='''dtype of the generated spec files f4|f8, default=f8''')
+    parser.add_argument('--output_dir', metavar='DIR', help='''output for the mcep file''')
 
     args = parser.parse_args()
     
-    dataset_dir = NNdir + '/data/' + args.dataset
-    
-    print('..dataset directory: %s'%dataset_dir)
-    print('..extension: %s'%args.ext)
     print('..output data files dtype: %s'%args.output_spec_dtype)
-    
-    filenames = dataset_dir + '/%s_specnames_???.npy'%args.dataset
-    data_files = dataset_dir + '/%s_data_???.npy.%s'%(args.dataset, args.ext)
-    
-    generate_specs(data_files, filenames, args.output_spec_dtype)
+
+    generate_specs(args.dataset, args.specnames, args.output_spec_dtype, args.output_dir)
     
     
     

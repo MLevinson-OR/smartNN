@@ -29,6 +29,7 @@ def savenpy(spec_files, splits, dtype, feature_size, output_dir):
     
     dataset = os.path.basename(os.path.dirname(spec_files))
     files = glob.glob(spec_files)
+    files.sort()
     size = len(files)
     assert size > 0, 'empty folder'
     split = generate_splits(size, splits)
@@ -41,7 +42,8 @@ def savenpy(spec_files, splits, dtype, feature_size, output_dir):
         count += 1
         with open(f) as fb:
             clip = np.fromfile(fb, dtype='<%s'%dtype, count=-1)
-            assert clip.shape[0] % feature_size == 0
+            assert clip.shape[0] % feature_size == 0, \
+                'clip.shape[0]:%s, feature_size:%s'%(clip.shape[0],feature_size)
             data.extend(clip)
             name = os.path.basename(f)
             file_names.append((name, clip.shape[0]/feature_size))
@@ -73,7 +75,7 @@ if __name__ == '__main__':
     parser.add_argument('--splits', metavar='INT', default=1, type=int, 
                         help='''number of splits for the merged spec files''')
     parser.add_argument('--input_spec_dtype', metavar='f4|f8', default='f4', 
-                        help='''dtype of the input spec files f4|f8''')
+                        help='''dtype of the input spec files f4|f8, default=f4''')
     parser.add_argument('--feature_size', metavar='INT', default=2049, type=int, 
                         help='''feature size in an example''')
     parser.add_argument('--output_dir', metavar='PATH', default='.', 
@@ -88,8 +90,11 @@ if __name__ == '__main__':
     print('..feature_size: %s'%args.feature_size)
     print('..save outputs to: %s'%args.output_dir)
     
-    spec_files = "%s*.%s"%(args.spec_dir, args.ext)
+    spec_files = "%s/*.%s"%(args.spec_dir, args.ext)
     print(spec_files)
+    
+    if not os.path.exists(args.output_dir):
+        os.mkdir(args.output_dir)
     
     savenpy(spec_files, args.splits, args.input_spec_dtype, args.feature_size, args.output_dir)
         

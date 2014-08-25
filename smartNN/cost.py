@@ -66,5 +66,27 @@ class Cost(object):
         L = T.sum(T.abs_(y - y_pred, axis=1))
         return T.mean(L, dtype=floatX)
     
+    def _cost_top1(self, y, y_pred):
+        TP = y[T.arange(y.shape[0]), y_pred.argmax(axis=1)]
+        return T.sum(TP, dtype=floatX) / TP.shape[0]
+        
+    def _cost_top5(self, y, y_pred):
+        tp = T.zeros(y.shape)
+        
+        for row, z in zip(y_pred,tp):
+            sorted = row.argsort(axis=1)[:5] # top 5 values
+            z[sorted] = 1 
+        
+        for k in T.arange(y_pred.shape[1]):
+            if k < y_shape[1] - 5:
+                y_pred[T.arange(y_pred.shape[0]), y_pred.argmin(axis=1)] = 1
+            else:
+                y_pred[T.arange(y_pred.shape[0]), y_pred.argmax(axis=1)] = -1
+        
+        
+            
+        return T.sum(tp)
+        
+    
         
     

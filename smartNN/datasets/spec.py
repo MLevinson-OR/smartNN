@@ -30,11 +30,11 @@ class Laura(Dataset):
     
     def __init__(self, part, **kwargs):
         
-        data_path = os.environ['smartNN_DATA_PATH'] + '/Laura/' + part
+        data_path = os.environ['smartNN_DATA_PATH'] + '/Laura_npy/' + part
         with open(data_path) as f:
             data = np.load(f)
         
-        super(Laura_Splits, self).__init__(X=data, y=data, **kwargs)
+        super(Laura, self).__init__(X=data, y=data, **kwargs)
         
     
     

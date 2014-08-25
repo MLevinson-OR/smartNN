@@ -6,7 +6,8 @@ import numpy as np
 
 from smartNN.model import MLP
 from smartNN.layer import RELU, Sigmoid, Softmax, Linear
-from smartNN.datasets.mnist import Mnist
+# from smartNN.datasets.mnist import Mnist
+from smartNN.datasets.homeowner import HomeOwner
 from smartNN.datasets.spec import P276
 from smartNN.learning_rule import LearningRule
 from smartNN.log import Log
@@ -33,9 +34,8 @@ print('smartNN_DATABASE_PATH = ' + os.environ['smartNN_DATABASE_PATH'])
 
 
 def mlp():
-    
+
     data = Mnist(train_valid_test_ratio=[5,1,1])
-    
 
     mlp = MLP(input_dim = data.feature_size())
     

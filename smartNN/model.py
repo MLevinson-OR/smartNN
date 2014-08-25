@@ -134,6 +134,8 @@ class AutoEncoder(MLP):
         f = theano.function([input_state], output_state)
         return f(input_values)
 
+class DropoutMLP(MLP):
+    pass
     
     
     

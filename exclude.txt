@@ -1,7 +1,7 @@
-data/
 database/
 save/
 .git/
 images/
 *.pyc
 .DS_Store
+data/

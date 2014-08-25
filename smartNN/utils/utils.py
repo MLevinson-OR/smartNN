@@ -1,6 +1,7 @@
 import theano
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 def split_list(tuple_list):
     """
@@ -120,8 +121,43 @@ def tile_raster_graphs(dct_reconstruct, orig, ae_reconstruct, tile_shape, tile_s
             plt.axis('tight')
         else:
             plt.axis(axis)
-    return plt    
+    return plt  
+      
     
+def graphs_spec(save_dir, file_name, orig_path=None, struct_path=None, dct_path=None, show=True, 
+    save=False, red_type='<f8', green_type='<f8', frame=0, frame_size=2049):
+    '''
+    DESCRIPTION:
+        graphs the spec given the path
+    PARAM:
+        show : show the graph
+        save : save the graph
+        frame : the frame to be display
+    '''
+    
+    if orig_path:
+        orig_data = np.fromfile(orig_path, dtype='<f4', count=-1) 
+        plt.plot(orig_data[frame*frame_size:(frame+1)*frame_size], 'b', label='original')
+   
+   
+    if struct_path:
+        struct_data = np.fromfile(struct_path, dtype=red_type, count=-1)
+        plt.plot(struct_data[frame*frame_size:(frame+1)*frame_size], 'r', label='AE')
+
+    if dct_path:
+        dct_data = np.fromfile(dct_path, dtype=green_type, count=-1)
+        plt.plot(dct_data[frame*frame_size:(frame+1)*frame_size], 'g', label='dct')
+
+
+    if save:
+        plt.savefig('%s/%s_%s.png'%(save_dir, file_name,frame))
+        print('saving graph.. ') 
+    
+    if show:
+        print('showing graph..')
+        plt.show()
+    
+
 
 
 
