@@ -23,6 +23,7 @@ with open(args.model) as m:
   model = cPickle.load(m)
 
 dataset_files = glob.glob(args.dataset)
+dataset_files.sort()
 
 if not os.path.exists(args.output_dir):
     os.mkdir(args.output_dir)

@@ -45,7 +45,7 @@ fi
 
 
 echo 'number of files: ' `echo $files | wc -w`
-
+echo $files
 
 if [ ! -d $WAV_DIR ]; then
     echo 'make wav dir' $WAV_DIR
@@ -53,25 +53,11 @@ if [ ! -d $WAV_DIR ]; then
 fi
 
 
-# model=DCT_64
-# SPECS_DIR=$vol/generated_specs/Laura/$model
-# SPECS_DIR=$vol/VCTK/Research-Demo/fa-tts/STRAIGHT-TTS/tmp/England/Laura/abs
-# WAV_DIR=$vol/generated_wavs/Laura/$model
-
-# SPEC_EXT=spec.warp.f4
-# ext="spec.unwarp.f8"
-# ext=spec.double
-# basenames=`ls $SPECS_DIR/ | awk -F '[/.]' '{print $1}'`
-# basenames="1119_1"
-# echo $basenames
-# files=`cat /home/smg/zhenzhou/datasets/test_spec.txt`
-# echo $files
 for f in $files; do
-#     base=`basename $f .$SPEC_EXT`
-#     echo 'unwarping: ' $f
-# for base in $basenames; do
-#     filename="$base.$ext";
-    filename=`basename $f`
-    echo $filename;
-    synthesis_fft -f $rate -spec -fftl $fftlen -order $order -shift $shift -sigp 1.2 -cornf 4000 -bap -apfile ${TMP_DIR}/abs/${base}.bndap.double ${F0_OUTPUT}/${base}.f0 $SPECS_DIR/${filename} $WAV_DIR/${base}.wav > ${TMP_DIR}/log/${base}.log;
+    base=`basename $f .$SPEC_EXT`
+    filename="$base.$SPEC_EXT";
+    echo '----------------'
+    echo $base
+    echo 'spec file: ' $SPEC_DIR/${filename};
+    synthesis_fft -f $rate -spec -fftl $fftlen -order $order -shift $shift -sigp 1.2 -cornf 4000 -bap -apfile ${TMP_DIR}/abs/${base}.bndap.double ${F0_OUTPUT}/${base}.f0 $SPEC_DIR/${filename} $WAV_DIR/${base}.wav > ${TMP_DIR}/log/${base}.log;
 done

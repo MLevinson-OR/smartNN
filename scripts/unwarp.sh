@@ -36,9 +36,7 @@ if [ $n == 0 ]; then
     files=`ls $WARP_DIR/*.$WARP_EXT | awk -F '[.]' '{print $1}'`
 fi
 
-
 echo 'number of files: ' `echo $files | wc -w`
-
 
 if [ ! -d $UNWARP_DIR ]; then
     echo 'make warp dir' $UNWARP_DIR
