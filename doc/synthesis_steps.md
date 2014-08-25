@@ -2,6 +2,7 @@
 # Procedures for generating mcep files from a trained AutoEncoder #
 
 __Summary of steps for generating mcep files from Autoencoder__
+
 1. Generate warp specs from norm spec
 2. Merge warp specs into npy arrays to be feeded into Autoencoder
 3. Pass the npy arrays through the encoding part of the Autoencoder to get
@@ -10,6 +11,7 @@ __Summary of steps for generating mcep files from Autoencoder__
 
 
 __1. Generate warp specs from norm spec__
+
 To generate warp specs run [warp.sh](../scripts/warp.sh)
 
 ```bash
@@ -18,6 +20,7 @@ $ bash warp.sh --spec_dir /home/smg/zhenzhou/VCTK/data/inter-module/mcep/England
 ```
 
 __2. Merge warp specs into npy arrays to be feeded into Autoencoder__
+
 In order to run the Autoencoder on the warp spec files, the warp spec files has to be
 merged into a numpy array by running [specs2data.py](../scripts/specs2data.py) with options
 --spec_dir DIR        dir of the spec files
@@ -34,6 +37,7 @@ $ python specs2data.py --spec_dir /home/smg/zhenzhou/datasets/Laura_warp_specs -
 
 __3. Pass the npy arrays through the encoding part of the Autoencoder to get
    lower dimensional npy arrays__
+
 run [encode_dataset.py](../scripts/encode_dataset.py) to output the lower dimensional features
 ```bash
 $ model=AE0729_warp_3layers_finetune_20140729_1221_54548278
@@ -42,6 +46,7 @@ $ python encode_dataset.py --model /home/smg/zhenzhou/pynet/save/log/$model/mode
 ```
 
 __4. Split the lower dimensional npy arrays into mcep files__
+
 run [data2specs.py](../scripts/specs2data.py) to split npy arrays into individual mcep|spec files
 ```bash
 $ python data2specs.py --dataset '/home/smg/zhenzhou/demo/encoded/AE-120_npy/Laura_warp_data*'
@@ -51,11 +56,13 @@ $ python data2specs.py --dataset '/home/smg/zhenzhou/demo/encoded/AE-120_npy/Lau
 
 # Procedure for generating wave files using hmm generated mceps passing through Autoencoder #
 __Summary of steps for generating wave files using hmm generated mceps passing through Autoencoder__
+
 1. Generate specs from hmm generated mgcs using the decoding part of Autoencoder
 2. Unwarp the generated specs
 3. Synthesize wav from unwarp specs
 
 __1. Generate specs from hmm generated mgcs using the decoding part of Autoencoder__
+
 run [mgc2spec_thru_decoder.py](../scripts/mgc2spec_thru_decoder.py) to generate the spec files
 by passing the mgc files through the decoding part of the encoder
 ```bash
@@ -68,6 +75,7 @@ $ python mgc2spec_thru_decoder.py  --mgc_dir /home/smg/takaki/DNN/Zhenzhou/20140
 ```
 
 __2. Unwarp the generated specs__
+
 run [unwarp.sh](../scripts/unwarp.sh) to unwarp the generated warp specs
 ```bash
 $ bash unwarp.sh --warp_dir /home/smg/zhenzhou/demo/decoded_specs/$model 
@@ -76,6 +84,7 @@ $ bash unwarp.sh --warp_dir /home/smg/zhenzhou/demo/decoded_specs/$model
 ```
 
 __3. Synthesize wav from unwarp specs__
+
 run [synthesis.sh](../scripts/synthesis.sh) for synthesizing wav files from unwarp specs
 ```bash
 $ bash synthesis.sh --spec_dir /home/smg/zhenzhou/demo/decoded_specs/$model --spec_ext spec.unwarp.f8 
@@ -87,12 +96,14 @@ $ bash synthesis.sh --spec_dir /home/smg/zhenzhou/demo/decoded_specs/$model --sp
 # Procedure for generating wave files from reconstructed specs from Autoencoder directly #
 
 __Summary of steps for generating wave files from Autoencoder__
+
 1. Generate reconstructed specs from the Autoencoder (combining encoding and decoding)
 2. Unwarp the reconstructed specs
 3. Synthesize wav from unwarp specs
 
 
 __1. Generate reconstructed specs from the Autoencoder (combining encoding and decoding)__
+
 run [generate_specs_from_model.py](../scripts/generate_specs_from_model.py)
 ```bash
 $ model=AE0729_warp_3layers_finetune_20140729_1221_54548278
@@ -102,6 +113,7 @@ $ python generate_specs_from_model.py --model /home/smg/zhenzhou/pynet/save/log/
 ```
 
 __2. Unwarp the reconstructed specs__
+
 run [unwarp.sh](../scripts/unwarp.sh) to unwarp the reconstructed warp specs
 ```bash
 $ bash unwarp.sh --warp_dir /home/smg/zhenzhou/demo/generated_specs/$model 
@@ -110,6 +122,7 @@ $ bash unwarp.sh --warp_dir /home/smg/zhenzhou/demo/generated_specs/$model
 ```
 
 __3. Synthesize wav from unwarp specs__
+
 run [synthesis.sh](../scripts/synthesis.sh) for synthesizing wav files from unwarp specs
 ```bash
 $ bash synthesis.sh --spec_dir /home/smg/zhenzhou/demo/generated_specs/$model --spec_ext spec.unwarp.f8 
