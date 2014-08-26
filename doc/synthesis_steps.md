@@ -1,16 +1,16 @@
 
-# Procedures for generating mcep files from a trained AutoEncoder #
+# Generate mceps from the encoder part of autoencoder #
 
 __Summary of steps for generating mcep files from Autoencoder__
 
-1. Generate warp specs from norm spec
+1. Generate warp specs from original spec
 2. Merge warp specs into npy arrays to be feeded into Autoencoder
 3. Pass the npy arrays through the encoding part of the Autoencoder to get
    lower dimensional npy arrays
 4. Split the lower dimensional npy arrays into mcep files
 
 
-__1. Generate warp specs from norm spec__
+__1. Generate warp specs from original spec__
 
 To generate warp specs run [warp.sh](../scripts/warp.sh)
 
@@ -48,8 +48,8 @@ $ python data2specs.py --dataset '/home/smg/zhenzhou/demo/encoded/AE-120_npy/Lau
   --output_dir /home/smg/zhenzhou/demo/generated_mceps/$model
 ```
 
-# Procedure for generating wave files using hmm generated mceps passing through Autoencoder #
-__Summary of steps for generating wave files using hmm generated mceps passing through Autoencoder__
+# Pass HMM generated mgc through decoder to generate specs which is synthesized to wav #
+__Summary of steps for generating wave files using hmm generated mceps passing through decoder__
 
 1. Generate specs from hmm generated mgcs using the decoding part of Autoencoder
 2. Unwarp the generated specs
@@ -85,7 +85,7 @@ $ bash mk_wav.sh
 ```
 
 
-# Procedure for generating wave files from reconstructed specs from Autoencoder directly #
+# Reconstruct spec file using autoencoder and use it to synthesize wav #
 
 __Summary of steps for generating wave files from Autoencoder__
 
