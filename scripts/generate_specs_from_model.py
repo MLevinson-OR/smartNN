@@ -34,16 +34,25 @@ for f_path in dataset_files:
     f = open(f_path)
     dataset_raw = np.load(f)
 
-    proc = getattr(procs, args.preprocessor)()
-    print 'applying preprocessing: ' + args.preprocessor
-    dataset_proc = proc.apply(dataset_raw)
+    if args.preprocessor:
+        proc = getattr(procs, args.preprocessor)()
+        print 'applying preprocessing: ' + args.preprocessor
+        dataset_proc = proc.apply(dataset_raw)
+    
+    else:
+        dataset_proc = dataset_raw
+
     del dataset_raw
     print 'forward propagation..'
     dataset_out = model.fprop(dataset_proc)
     del dataset_proc
     
-    print 'invert dataset..'
-    dataset = proc.invert(dataset_out)
+    if args.preprocessor:
+        print 'invert dataset..'
+        dataset = proc.invert(dataset_out)
+    else:
+        dataset = dataset_out
+    
     dataset = dataset.astype(args.output_dtype)
     del dataset_out
 

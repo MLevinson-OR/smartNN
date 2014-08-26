@@ -1,36 +1,42 @@
 import glob
+import cPickle
 import os
 import argparse
 import numpy as np
+import pynet.datasets.preprocessor as procs
 
-def savenpy(ext, spec_dir, specnames, datafiles, dtype, 
-            feature_size, output_dir, preprocessor, output_dtype):
+def generate_specs(ext, spec_dir, specnames, datafiles, dtype, feature_size, 
+                   output_dir, preprocessor, output_dtype, model):
     
     assert dtype in ['f4', 'f8']
+    
+    print 'opening model.. ' + model
+    with open(model) as m:
+        model = cPickle.load(m)
     
     specnames_ls = glob.glob(specnames)
     datafiles_ls = glob.glob(datafiles)
     specnames_ls.sort()
     datafiles_ls.sort()
     
-#     import pdb
-#     pdb.set_trace()
-    
     spec_files = "%s/*.%s"%(spec_dir, ext)
-    dataset = os.path.basename(os.path.dirname(spec_files))
     files = glob.glob(spec_files)
-
     size = len(files)
-    assert size > 0, 'empty folder'
-    print '..number of files %d'%size
+    assert size > 0, 'empty mgc folder'
+    print '..number of mgc files %d'%size
     data = []
     count = 0
     
     for datafile, specname in zip(datafiles_ls, specnames_ls):
+        print 'datafile: ' + datafile
+        print 'specname: ' + specname
+        assert datafile.split('_data_')[-1] == specname.split('_specnames_')[-1]
+        
         specname_fin = open(specname)
         specname_data = np.load(specname_fin)
         
         data = []
+        mgc_frame_num = []
         for name, num_frames in specname_data:
             basename = name.split('.')[0]
             f = '%s/%s.%s'%(spec_dir, basename, ext)
@@ -40,67 +46,56 @@ def savenpy(ext, spec_dir, specnames, datafiles, dtype,
             clip = np.fromfile(f, dtype='<%s'%dtype, count=-1)
             assert clip.shape[0] % feature_size == 0, \
                   'clip.shape[0]:%s, feature_size:%s'%(clip.shape[0],feature_size)
-#                 assert clip.shape[0] / feature_size == int(num_frames)
+            
+            mgc_frame_num.append(clip.shape[0] / feature_size)
+            print '(mgc frame num, spec frame num)', clip.shape[0] / feature_size, int(num_frames)
             data.extend(clip)
                 
             print(str(count) + '/' + str(size) + ' opened: '  + name)
 
         specname_basename = os.path.basename(specname)
         data_basename = specname_basename.replace('specnames', 'data')
-#         with open(output_dir + '/%s'%data_basename, 'wb') as npy:
-#             print('..saving %s'%data_basename)
-        assert len(data)%feature_size == 0
+        assert len(data) % feature_size == 0
+        print '..reshaping mgc files into npy array' 
         low_dim_data = np.asarray(data).reshape(len(data)/feature_size, feature_size)
-#             np.save(npy, data)
-
-        print 'datafile: ' + datafile
-        print 'specname: ' + specname
-        
-        assert datafile.split('_data_')[-1] == specname.split('_specnames_')[-1]
 
         data_fin = open(datafile)
         dataset_raw = np.load(data_fin)
 
-#             g = open(low_dim_path)
-#             low_dim_data = np.load(g)
-
-        proc = getattr(procs, preprocessor)()
-        print 'applying preprocessing: ' + preprocessor
-        dataset_proc = proc.apply(dataset_raw)
+        if preprocessor:
+            proc = getattr(procs, args.preprocessor)()
+            print 'applying preprocessing: ' + args.preprocessor
+            proc.apply(dataset_raw)
+        
         del dataset_raw
+        
         print 'decoding..'
         dataset_out = model.decode(low_dim_data)
         del low_dim_data
-
-        print 'invert dataset..'
-        dataset = proc.invert(dataset_out)
+        
+        if preprocessor:
+            print 'invert dataset..'
+            dataset = proc.invert(dataset_out)
+        else:
+            dataset = dataset_out
+            
         dataset = dataset.astype(output_dtype)
         del dataset_out
 
-#             name = os.path.basename(f_path)
-#             name = name.replace('data', 'specnames')
-#     
-#             print 'opening.. ' + name
-#             g = open(os.path.dirname(f_path) + '/' + name)
-
-#             names_arr = np.load(g)
-
-#         num_exp = [int(num) for f_name, num in specname_data]
-#         assert sum(num_exp) == dataset.shape[0], \
-#                 'number of examples %s in data array is different from the spec files %s'%(sum(num_exp), dataset.shape[0])
-#  
         pointer = 0
-        for f_name, num in specname_data:
-            print 'f_name, num_exp : %s, %s'%(f_name, num)
-            dataset[pointer:pointer+int(num)].tofile(output_dir + '/' + f_name+'.%s'%output_dtype, format=output_dtype)
-            pointer += int(num)
+        for specname_d, mgc_num in zip(specname_data, mgc_frame_num):
+            f_name, num = tuple(specname_d)
+            print 'f_name, mgc_num_frames : %s, %s'%(f_name, mgc_num)
+            f_name = f_name.rstrip('.f4')
+            f_name = f_name.rstrip('.f8')
+            dataset[pointer:pointer + mgc_num].tofile(output_dir + '/' + f_name+'.%s'%output_dtype, format=output_dtype)
+            pointer += mgc_num
 
         assert pointer == dataset.shape[0], 'did not recur until the end of array'    
 
         print 'closing files..'
         data_fin.close()
         specname_fin.close()
-#         g.close()
         print 'Done!'
 
         
@@ -124,6 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('--preprocessor', metavar='NAME', help='name of the preprocessor')
     parser.add_argument('--output_dtype', metavar='f4|f8', default='f8', 
                     help='output datatype of spec file, f4|f8, default=f8')
+    parser.add_argument('--model', metavar='PATH', help='path for the model')
 
 
     args = parser.parse_args()
@@ -137,12 +133,13 @@ if __name__ == '__main__':
     print('..save outputs to: %s'%args.output_dir)
     print('..preprocessor: %s'%args.preprocessor)
     print('..output_dtype: %s'%args.output_dtype)
+    print('..model: %s'%args.model)
     
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
     
-    savenpy(args.ext, args.mgc_dir, args.specnames, args.dataset, args.input_spec_dtype, 
-            args.feature_size, args.output_dir, args.preprocessor, args.output_dtype)
+    generate_specs(args.ext, args.mgc_dir, args.specnames, args.dataset, args.input_spec_dtype, 
+            args.feature_size, args.output_dir, args.preprocessor, args.output_dtype, args.model)
         
         
         
