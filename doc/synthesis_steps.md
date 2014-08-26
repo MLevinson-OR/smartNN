@@ -65,7 +65,7 @@ $ python mgc2spec_thru_decoder.py  --mgc_dir /home/smg/takaki/DNN/Zhenzhou/20140
     --ext mgc --specnames '/home/smg/zhenzhou/demo/Laura_warp_npy/Laura_warp_specnames*' \
     --dataset '/home/smg/zhenzhou/demo/Laura_warp_npy/Laura_warp_data*' \
     --input_spec_dtype f4 --feature_size 120 --output_dir /home/smg/zhenzhou/demo/decoded_specs/$model \
-    --preprocessor Scale --output_dtype f8 --model /home/smg/zhenzhou/pynet/save/log/$model/model.pkl
+    --preprocessor Scale --output_dtype f4 --model /home/smg/zhenzhou/pynet/save/log/$model/model.pkl
 ```
 
 __2. Unwarp the generated specs__
@@ -79,11 +79,9 @@ $ bash unwarp.sh --warp_dir /home/smg/zhenzhou/demo/decoded_specs/$model \
 
 __3. Synthesize wav from unwarp specs__
 
-run [synthesis.sh](../scripts/synthesis.sh) for synthesizing wav files from unwarp specs
+run [mk_wav.sh](../scripts/mk_wav.sh) for synthesizing wav files from unwarp specs
 ```bash
-$ bash synthesis.sh --spec_dir /home/smg/zhenzhou/demo/decoded_specs/$model --spec_ext spec.unwarp.f8 \
-       --wav_dir /home/smg/zhenzhou/demo/decoded_wavs/$model \
-       --warp_txt_file /home/smg/zhenzhou/datasets/test_spec.txt
+$ bash mk_wav.sh
 ```
 
 

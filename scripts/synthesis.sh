@@ -59,5 +59,7 @@ for f in $files; do
     echo '----------------'
     echo $base
     echo 'spec file: ' $SPEC_DIR/${filename};
-    synthesis_fft -f $rate -spec -fftl $fftlen -order $order -shift $shift -sigp 1.2 -cornf 4000 -bap -apfile ${TMP_DIR}/abs/${base}.bndap.double ${F0_OUTPUT}/${base}.f0 $SPEC_DIR/${filename} $WAV_DIR/${base}.wav > ${TMP_DIR}/log/${base}.log;
+    synthesis_fft -f $rate -spec -fftl $fftlen -order $order -shift $shift -sigp 1.2 \
+    -cornf 4000 -bap -apfile ${TMP_DIR}/abs/${base}.bndap.double ${F0_OUTPUT}/${base}.f0 \
+    $SPEC_DIR/${filename} $WAV_DIR/${base}.wav > ${TMP_DIR}/log/${base}.log;
 done
